@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { AlertsModule } from './alerts/alerts.module';
+import { FinnhubModule } from './finnhub/finnhub.module';
 
 @Module({
   imports: [
@@ -11,6 +14,7 @@ import { AuthModule } from './auth/auth.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
+    EventEmitterModule.forRoot(),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -25,6 +29,8 @@ import { AuthModule } from './auth/auth.module';
       }),
     }),
     AuthModule,
+    AlertsModule,
+    FinnhubModule,
   ],
   controllers: [AppController],
   providers: [AppService],
