@@ -24,6 +24,20 @@ export const authApi = {
     apiClient.post<AuthResponse>('/auth/login', { email, password }),
 };
 
+export interface CandlePoint {
+  timestamp: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+}
+
+export const stocksApi = {
+  getCandles: (symbol: string): Promise<CandlePoint[]> =>
+    apiClient.get<CandlePoint[]>(`/stocks/${symbol}/candles`).then((r) => r.data),
+};
+
 export const alertsApi = {
   getAll: () => apiClient.get('/alerts').then((r) => r.data),
   create: (data: { symbol: string; targetPrice: number; condition: 'above' | 'below' }) =>

@@ -1,14 +1,15 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { ActivityIndicator, View } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { ActivityIndicator, Text, View } from 'react-native';
 import { useAuthStore } from '../store/authStore';
 
 // Auth screens
 import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
 
-// App screens (placeholders — filled in PASO 5)
+// App screens
 import StocksScreen from '../screens/app/StocksScreen';
 import AlertsScreen from '../screens/app/AlertsScreen';
 import StockDetailScreen from '../screens/app/StockDetailScreen';
@@ -18,14 +19,37 @@ export type AuthStackParamList = {
   Register: undefined;
 };
 
-export type AppStackParamList = {
+export type TabParamList = {
   Stocks: undefined;
   Alerts: undefined;
+};
+
+export type AppStackParamList = {
+  Tabs: undefined;
   StockDetail: { symbol: string };
 };
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const AppStack = createNativeStackNavigator<AppStackParamList>();
+const Tab = createBottomTabNavigator<TabParamList>();
+
+function TabNavigator() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color }) => (
+          <Text style={{ fontSize: 20, color }}>
+            {route.name === 'Stocks' ? '📈' : '🔔'}
+          </Text>
+        ),
+        headerShown: false,
+      })}
+    >
+      <Tab.Screen name="Stocks" component={StocksScreen} />
+      <Tab.Screen name="Alerts" component={AlertsScreen} />
+    </Tab.Navigator>
+  );
+}
 
 function AuthNavigator() {
   return (
@@ -39,8 +63,7 @@ function AuthNavigator() {
 function AppNavigator() {
   return (
     <AppStack.Navigator>
-      <AppStack.Screen name="Stocks" component={StocksScreen} options={{ title: 'Live Stocks' }} />
-      <AppStack.Screen name="Alerts" component={AlertsScreen} options={{ title: 'My Alerts' }} />
+      <AppStack.Screen name="Tabs" component={TabNavigator} options={{ headerShown: false }} />
       <AppStack.Screen
         name="StockDetail"
         component={StockDetailScreen}
