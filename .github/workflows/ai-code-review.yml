@@ -1,0 +1,27 @@
+name: AI Code Review (AIDLC)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  ai-review:
+    name: AIDLC AI Code Review
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Reusable AIDLC workflow step — posts inline PR comments with AI findings.
+      # Requires ANTHROPIC_API_KEY or OPENAI_API_KEY set as repo secret.
+      - name: Run AI diff review
+        uses: awslabs/aidlc-workflows/.github/actions/code-review@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+        continue-on-error: true  # non-blocking — findings are advisory only
