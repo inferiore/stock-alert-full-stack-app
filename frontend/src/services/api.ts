@@ -1,0 +1,32 @@
+import axios from 'axios';
+import { useAuthStore } from '../store/authStore';
+
+const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000';
+
+export const apiClient = axios.create({ baseURL: API_URL });
+
+// Attach JWT to every request automatically
+apiClient.interceptors.request.use((config) => {
+  const token = useAuthStore.getState().token;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+export interface AuthResponse {
+  accessToken: string;
+  user: { id: string; email: string };
+}
+
+export const authApi = {
+  register: (email: string, password: string) =>
+    apiClient.post<AuthResponse>('/auth/register', { email, password }),
+  login: (email: string, password: string) =>
+    apiClient.post<AuthResponse>('/auth/login', { email, password }),
+};
+
+export const alertsApi = {
+  getAll: () => apiClient.get('/alerts').then((r) => r.data),
+  create: (data: { symbol: string; targetPrice: number; condition: 'above' | 'below' }) =>
+    apiClient.post('/alerts', data).then((r) => r.data),
+  remove: (id: string) => apiClient.delete(`/alerts/${id}`),
+};

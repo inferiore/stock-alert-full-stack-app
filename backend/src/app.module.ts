@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { AlertsModule } from './alerts/alerts.module';
 import { FinnhubModule } from './finnhub/finnhub.module';
+import { GatewayModule } from './gateway/gateway.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { FinnhubModule } from './finnhub/finnhub.module';
     AuthModule,
     AlertsModule,
     FinnhubModule,
+    GatewayModule,
   ],
   controllers: [AppController],
   providers: [AppService],
