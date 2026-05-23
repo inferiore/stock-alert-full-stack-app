@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import { useAlerts, useCreateAlert, useDeleteAlert } from '../../hooks/useAlerts';
+import SymbolSearchInput from '../../components/SymbolSearchInput';
 
 type Condition = 'above' | 'below';
 
@@ -51,12 +52,9 @@ export default function AlertsScreen() {
       <View style={styles.form}>
         <Text style={styles.formTitle}>New Alert</Text>
         <View style={styles.row}>
-          <TextInput
-            style={[styles.input, styles.symbolInput]}
-            placeholder="Symbol (AAPL)"
-            autoCapitalize="characters"
+          <SymbolSearchInput
             value={symbol}
-            onChangeText={setSymbol}
+            onSelect={setSymbol}
             testID="symbol-input"
           />
           <TextInput
@@ -135,7 +133,7 @@ export default function AlertsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f5f5f5' },
-  form: { backgroundColor: '#fff', padding: 16, margin: 16, borderRadius: 12, elevation: 2 },
+  form: { backgroundColor: '#fff', padding: 16, margin: 16, borderRadius: 12, elevation: 2, zIndex: 10, overflow: 'visible' },
   formTitle: { fontSize: 16, fontWeight: '700', marginBottom: 12 },
   row: { flexDirection: 'row', gap: 8 },
   input: {

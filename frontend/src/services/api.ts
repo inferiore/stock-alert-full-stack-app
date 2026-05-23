@@ -44,7 +44,15 @@ export interface QuotePoint {
   prevClose: number;
 }
 
+export interface SymbolResult {
+  symbol: string;
+  description: string;
+  type: string;
+}
+
 export const stocksApi = {
+  searchSymbols: (q: string): Promise<SymbolResult[]> =>
+    apiClient.get<SymbolResult[]>('/stocks/search', { params: { q } }).then((r) => r.data),
   getQuote: (symbol: string): Promise<QuotePoint> =>
     apiClient.get<QuotePoint>(`/stocks/${symbol}/quote`).then((r) => r.data),
   getCandles: (symbol: string): Promise<CandlePoint[]> =>

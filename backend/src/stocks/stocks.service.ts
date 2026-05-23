@@ -45,6 +45,22 @@ export class StocksService {
     private readonly config: ConfigService,
   ) {}
 
+  async searchSymbols(query: string): Promise<{ symbol: string; description: string; type: string }[]> {
+    const apiKey = this.config.get<string>('FINNHUB_API_KEY', '');
+    interface FinnhubSearchResult { symbol: string; description: string; displaySymbol: string; type: string; }
+    interface FinnhubSearchResponse { count: number; result: FinnhubSearchResult[]; }
+
+    const { data } = await firstValueFrom(
+      this.httpService.get<FinnhubSearchResponse>('https://finnhub.io/api/v1/search', {
+        params: { q: query, token: apiKey },
+      }),
+    );
+    return (data.result ?? [])
+      .filter((r) => r.type === 'Common Stock')
+      .slice(0, 10)
+      .map((r) => ({ symbol: r.displaySymbol, description: r.description, type: r.type }));
+  }
+
   async getQuote(symbol: string): Promise<QuotePoint> {
     const apiKey = this.config.get<string>('FINNHUB_API_KEY', '');
     const upper = symbol.toUpperCase();

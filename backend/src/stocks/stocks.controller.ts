@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { StocksService, CandlePoint, QuotePoint } from './stocks.service';
 
@@ -6,6 +6,12 @@ import { StocksService, CandlePoint, QuotePoint } from './stocks.service';
 @Controller('stocks')
 export class StocksController {
   constructor(private readonly stocksService: StocksService) {}
+
+  @Get('search')
+  searchSymbols(@Query('q') q: string): Promise<{ symbol: string; description: string; type: string }[]> {
+    if (!q || q.trim().length < 1) return Promise.resolve([]);
+    return this.stocksService.searchSymbols(q.trim());
+  }
 
   @Get(':symbol/quote')
   getQuote(@Param('symbol') symbol: string): Promise<QuotePoint> {
