@@ -9,6 +9,7 @@ import { AlertsModule } from './alerts/alerts.module';
 import { FinnhubModule } from './finnhub/finnhub.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { StocksModule } from './stocks/stocks.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { StocksModule } from './stocks/stocks.module';
     FinnhubModule,
     GatewayModule,
     StocksModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

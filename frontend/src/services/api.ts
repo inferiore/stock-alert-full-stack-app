@@ -38,6 +38,11 @@ export const stocksApi = {
     apiClient.get<CandlePoint[]>(`/stocks/${symbol}/candles`).then((r) => r.data),
 };
 
+export const usersApi = {
+  updateFcmToken: (fcmToken: string) =>
+    apiClient.put('/users/fcm-token', { fcmToken }),
+};
+
 export const alertsApi = {
   getAll: () => apiClient.get('/alerts').then((r) => r.data),
   create: (data: { symbol: string; targetPrice: number; condition: 'above' | 'below' }) =>
