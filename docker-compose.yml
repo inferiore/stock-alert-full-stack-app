@@ -24,16 +24,12 @@ services:
     restart: unless-stopped
     ports:
       - '3000:3000'
+    env_file:
+      - ./backend/.env
     environment:
       NODE_ENV: development
       DB_HOST: db
       DB_PORT: 3306
-      DB_USERNAME: root
-      DB_PASSWORD: root
-      DB_NAME: stockalerts
-      JWT_SECRET: ${JWT_SECRET:-change_me_in_production}
-      FINNHUB_API_KEY: ${FINNHUB_API_KEY}
-      FIREBASE_SERVICE_ACCOUNT: ${FIREBASE_SERVICE_ACCOUNT:-}
     depends_on:
       db:
         condition: service_healthy
