@@ -1,29 +1,31 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import request from 'supertest';
-import { App } from 'supertest/types';
-import { AppModule } from './../src/app.module';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const request = require('supertest') as typeof import('supertest');
+import { createTestApp } from './test-app.factory';
 
-describe('AppController (e2e)', () => {
-  let app: INestApplication<App>;
+describe('App (E2E) — smoke test', () => {
+  let app: INestApplication;
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleFixture.createNestApplication();
-    await app.init();
+  beforeAll(async () => {
+    ({ app } = await createTestApp());
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
-  });
-
-  afterEach(async () => {
+  afterAll(async () => {
     await app.close();
+  });
+
+  it('POST /auth/register returns 400 for missing body (ValidationPipe active)', async () => {
+    await request(app.getHttpServer())
+      .post('/auth/register')
+      .send({})
+      .expect(400);
+  });
+
+  it('GET /auth/profile returns 401 when unauthenticated (JwtAuthGuard active)', async () => {
+    await request(app.getHttpServer()).get('/auth/profile').expect(401);
+  });
+
+  it('GET /alerts returns 401 when unauthenticated (JwtAuthGuard active)', async () => {
+    await request(app.getHttpServer()).get('/alerts').expect(401);
   });
 });

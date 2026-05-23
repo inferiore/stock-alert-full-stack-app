@@ -26,7 +26,8 @@ export class Alert {
   @Column('decimal', { precision: 18, scale: 4 })
   targetPrice: number;
 
-  @Column({ type: 'enum', enum: ['above', 'below'], default: 'above' })
+  // 'simple-enum' stores as varchar — compatible with MySQL and SQLite (used in E2E tests)
+  @Column({ type: 'simple-enum', enum: ['above', 'below'], default: 'above' })
   condition: AlertCondition;
 
   @Column({ default: true })
