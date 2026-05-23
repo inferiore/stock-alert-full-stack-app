@@ -6,8 +6,10 @@ import {
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import {
   ALERT_TRIGGERED_EVENT,
-  AlertTriggeredPayload,
   PRICE_UPDATE_EVENT,
+} from '../common/events.constants';
+import type {
+  AlertTriggeredPayload,
   PriceUpdatePayload,
 } from '../common/events.constants';
 import { AlertResponseDto } from './dto/alert-response.dto';

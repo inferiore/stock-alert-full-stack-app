@@ -8,14 +8,10 @@ import {
 } from '@nestjs/websockets';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Server, Socket } from 'socket.io';
-import {
-  PRICE_UPDATE_EVENT,
-  PriceUpdatePayload,
-} from '../common/events.constants';
-import {
-  FINNHUB_SERVICE_TOKEN,
-  IFinnhubService,
-} from '../finnhub/interfaces/finnhub.service.interface';
+import { PRICE_UPDATE_EVENT } from '../common/events.constants';
+import type { PriceUpdatePayload } from '../common/events.constants';
+import { FINNHUB_SERVICE_TOKEN } from '../finnhub/interfaces/finnhub.service.interface';
+import type { IFinnhubService } from '../finnhub/interfaces/finnhub.service.interface';
 import { WsJwtGuard } from './ws-jwt.guard';
 
 interface SocketData {

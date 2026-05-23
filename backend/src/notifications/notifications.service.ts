@@ -2,10 +2,8 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
 import * as admin from 'firebase-admin';
-import {
-  ALERT_TRIGGERED_EVENT,
-  AlertTriggeredPayload,
-} from '../common/events.constants';
+import { ALERT_TRIGGERED_EVENT } from '../common/events.constants';
+import type { AlertTriggeredPayload } from '../common/events.constants';
 import { INotificationsService } from './interfaces/notifications.service.interface';
 
 @Injectable()

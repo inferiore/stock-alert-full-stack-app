@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import * as WebSocket from 'ws';
+import WebSocket from 'ws';
 import {
   PRICE_UPDATE_EVENT,
   PriceUpdatePayload,
@@ -64,10 +64,10 @@ export class FinnhubService
     const url = `wss://ws.finnhub.io?token=${apiKey}`;
 
     this.logger.log('Connecting to Finnhub WebSocket…');
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    this.ws = new WebSocket(url);
+    const ws = new WebSocket(url);
+    this.ws = ws;
 
-    this.ws.on('open', () => {
+    ws.on('open', () => {
       this.logger.log('Finnhub WebSocket connected');
       this.reconnectDelay = 1000;
       for (const symbol of this.subscribedSymbols) {
@@ -75,15 +75,15 @@ export class FinnhubService
       }
     });
 
-    this.ws.on('message', (raw: Buffer) => {
+    ws.on('message', (raw: Buffer) => {
       this.handleMessage(raw.toString('utf-8'));
     });
 
-    this.ws.on('error', (err) => {
+    ws.on('error', (err) => {
       this.logger.error('Finnhub WS error', err.message);
     });
 
-    this.ws.on('close', () => {
+    ws.on('close', () => {
       if (!this.destroyed) {
         this.logger.warn(
           `Finnhub WS closed. Reconnecting in ${this.reconnectDelay}ms…`,

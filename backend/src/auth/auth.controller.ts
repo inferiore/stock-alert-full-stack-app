@@ -2,10 +2,8 @@ import { Body, Controller, Get, Inject, Post, UseGuards } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthResponseDto } from './dto/auth-response.dto';
-import {
-  AUTH_SERVICE_TOKEN,
-  IAuthService,
-} from './interfaces/auth.service.interface';
+import { AUTH_SERVICE_TOKEN } from './interfaces/auth.service.interface';
+import type { IAuthService } from './interfaces/auth.service.interface';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from './entities/user.entity';
