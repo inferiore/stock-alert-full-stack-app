@@ -1,4 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
+
+export interface QuotePoint {
+  symbol: string;
+  price: number;       // current price
+  change: number;      // change vs prev close
+  changePercent: number;
+  high: number;
+  low: number;
+  open: number;
+  prevClose: number;
+}
 
 export interface CandlePoint {
   timestamp: number;
@@ -24,6 +38,40 @@ const BASE_PRICES: Record<string, number> = {
 // renders with realistic-looking data without a premium key.
 @Injectable()
 export class StocksService {
+  private readonly logger = new Logger(StocksService.name);
+
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly config: ConfigService,
+  ) {}
+
+  async getQuote(symbol: string): Promise<QuotePoint> {
+    const apiKey = this.config.get<string>('FINNHUB_API_KEY', '');
+    const upper = symbol.toUpperCase();
+
+    interface FinnhubQuote { c: number; d: number; dp: number; h: number; l: number; o: number; pc: number; }
+    try {
+      const { data } = await firstValueFrom(
+        this.httpService.get<FinnhubQuote>('https://finnhub.io/api/v1/quote', {
+          params: { symbol: upper, token: apiKey },
+        }),
+      );
+      return {
+        symbol: upper,
+        price: data.c,
+        change: data.d,
+        changePercent: data.dp,
+        high: data.h,
+        low: data.l,
+        open: data.o,
+        prevClose: data.pc,
+      };
+    } catch (err) {
+      this.logger.error(`Failed to fetch quote for ${upper}`, err);
+      throw err;
+    }
+  }
+
   getCandles(symbol: string, days = 30): CandlePoint[] {
     const upper = symbol.toUpperCase();
     const basePrice = BASE_PRICES[upper] ?? 100;

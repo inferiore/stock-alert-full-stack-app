@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -14,6 +14,8 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppStackParamList } from '../../navigation/RootNavigator';
 import StockCard from '../../components/StockCard';
+import { stocksApi } from '../../services/api';
+import { useStockStore } from '../../store/stockStore';
 
 type Props = BottomTabScreenProps<TabParamList, 'Stocks'>;
 
@@ -24,6 +26,17 @@ export default function StocksScreen(_props: Props) {
   useStockSocket(WATCHLIST);
   const clearAuth = useAuthStore((s) => s.clearAuth);
   const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
+  const updatePrice = useStockStore((s) => s.updatePrice);
+
+  // Load initial prices via REST on mount so cards never start blank.
+  // WebSocket will override these as live trades arrive.
+  useEffect(() => {
+    WATCHLIST.forEach((symbol) => {
+      stocksApi.getQuote(symbol)
+        .then((q) => { if (q.price > 0) updatePrice(symbol, q.price); })
+        .catch(() => undefined);
+    });
+  }, [updatePrice]);
 
   return (
     <View style={styles.container}>

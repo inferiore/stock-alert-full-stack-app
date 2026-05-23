@@ -33,7 +33,20 @@ export interface CandlePoint {
   volume: number;
 }
 
+export interface QuotePoint {
+  symbol: string;
+  price: number;
+  change: number;
+  changePercent: number;
+  high: number;
+  low: number;
+  open: number;
+  prevClose: number;
+}
+
 export const stocksApi = {
+  getQuote: (symbol: string): Promise<QuotePoint> =>
+    apiClient.get<QuotePoint>(`/stocks/${symbol}/quote`).then((r) => r.data),
   getCandles: (symbol: string): Promise<CandlePoint[]> =>
     apiClient.get<CandlePoint[]>(`/stocks/${symbol}/candles`).then((r) => r.data),
 };
