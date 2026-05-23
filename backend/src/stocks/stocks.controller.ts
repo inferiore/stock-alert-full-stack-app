@@ -8,7 +8,7 @@ export class StocksController {
   constructor(private readonly stocksService: StocksService) {}
 
   @Get(':symbol/candles')
-  getCandles(@Param('symbol') symbol: string): Promise<CandlePoint[]> {
+  getCandles(@Param('symbol') symbol: string): CandlePoint[] {
     return this.stocksService.getCandles(symbol);
   }
 }
