@@ -10,6 +10,7 @@ import { FinnhubModule } from './finnhub/finnhub.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { StocksModule } from './stocks/stocks.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { DebugModule } from './debug/debug.module';
 
 @Module({
   imports: [
@@ -37,6 +38,8 @@ import { NotificationsModule } from './notifications/notifications.module';
     GatewayModule,
     StocksModule,
     NotificationsModule,
+    // Only available outside production — exposes /debug/simulate-price
+    ...(process.env.NODE_ENV !== 'production' ? [DebugModule] : []),
   ],
   controllers: [AppController],
   providers: [AppService],
