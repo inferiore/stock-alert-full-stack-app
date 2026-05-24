@@ -19,7 +19,7 @@ export class StocksController {
   }
 
   @Get(':symbol/candles')
-  getCandles(@Param('symbol') symbol: string): CandlePoint[] {
+  getCandles(@Param('symbol') symbol: string): Promise<CandlePoint[]> {
     return this.stocksService.getCandles(symbol);
   }
 }
