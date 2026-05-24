@@ -17,5 +17,6 @@ jobs:
           username: ederbarrios
           key: ${{ secrets.GCP_SSH_KEY }}
           script: |
+            sudo git config --global --add safe.directory /home/ederb1_1c/stock-alerts
             sudo git -C /home/ederb1_1c/stock-alerts pull
             cd /home/ederb1_1c/stock-alerts && sudo docker compose up -d --build
