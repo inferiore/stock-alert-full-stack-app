@@ -16,9 +16,10 @@ import { AlertResponseDto } from './dto/alert-response.dto';
 import { CreateAlertDto } from './dto/create-alert.dto';
 import { Alert } from './entities/alert.entity';
 import { AlertsRepository } from './repositories/alerts.repository';
+import { IAlertsService } from './interfaces/alerts.service.interface';
 
 @Injectable()
-export class AlertsService {
+export class AlertsService implements IAlertsService {
   constructor(
     private readonly alertsRepository: AlertsRepository,
     private readonly eventEmitter: EventEmitter2,

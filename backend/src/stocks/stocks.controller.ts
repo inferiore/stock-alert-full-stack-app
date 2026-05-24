@@ -1,11 +1,16 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Inject, Param, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { StocksService, CandlePoint, QuotePoint } from './stocks.service';
+import { CandlePoint, QuotePoint } from './stocks.service';
+import type { IStocksService } from './interfaces/stocks.service.interface';
+import { STOCKS_SERVICE_TOKEN } from './interfaces/stocks.service.interface';
 
 @UseGuards(JwtAuthGuard)
 @Controller('stocks')
 export class StocksController {
-  constructor(private readonly stocksService: StocksService) {}
+  constructor(
+    @Inject(STOCKS_SERVICE_TOKEN)
+    private readonly stocksService: IStocksService,
+  ) {}
 
   @Get('search')
   searchSymbols(@Query('q') q: string): Promise<{ symbol: string; description: string; type: string }[]> {

@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Inject,
   Param,
   Post,
   UseGuards,
@@ -12,14 +13,18 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../auth/entities/user.entity';
-import { AlertsService } from './alerts.service';
 import { CreateAlertDto } from './dto/create-alert.dto';
 import { AlertResponseDto } from './dto/alert-response.dto';
+import type { IAlertsService } from './interfaces/alerts.service.interface';
+import { ALERTS_SERVICE_TOKEN } from './interfaces/alerts.service.interface';
 
 @UseGuards(JwtAuthGuard)
 @Controller('alerts')
 export class AlertsController {
-  constructor(private readonly alertsService: AlertsService) {}
+  constructor(
+    @Inject(ALERTS_SERVICE_TOKEN)
+    private readonly alertsService: IAlertsService,
+  ) {}
 
   @Post()
   create(
