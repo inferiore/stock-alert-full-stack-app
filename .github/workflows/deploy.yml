@@ -16,6 +16,7 @@ jobs:
           host: 35.252.78.112
           username: luxuryhorizoncolombia
           key: ${{ secrets.GCP_SSH_KEY }}
+          command_timeout: 30m
           script: |
             sudo git config --global --add safe.directory /home/luxuryhorizoncolombia/stock-alert-full-stack-app
             sudo GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" git -C /home/luxuryhorizoncolombia/stock-alert-full-stack-app pull

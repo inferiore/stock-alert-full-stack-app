@@ -3,13 +3,13 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: stockalerts
     volumes:
       - db_data:/var/lib/mysql
     mem_limit: 512m
     healthcheck:
-      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', "-u${DB_USERNAME}", "-p${DB_PASSWORD}"]
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-uroot', '-proot']
       interval: 10s
       timeout: 5s
       retries: 5
