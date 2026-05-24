@@ -39,7 +39,7 @@ import { DebugModule } from './debug/debug.module';
     StocksModule,
     NotificationsModule,
     // Only available outside production — exposes /debug/simulate-price
-    ...(process.env.NODE_ENV !== 'production' ? [DebugModule] : []),
+    DebugModule,
   ],
   controllers: [AppController],
   providers: [AppService],
