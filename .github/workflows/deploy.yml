@@ -19,4 +19,4 @@ jobs:
           script: |
             sudo git config --global --add safe.directory /home/ederb1_1c/stock-alerts
             sudo GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" git -C /home/ederb1_1c/stock-alerts pull
-            cd /home/ederb1_1c/stock-alerts && sudo docker compose up -d --build
+            cd /home/ederb1_1c/stock-alerts && sudo docker compose -f docker-compose.prod.yml up -d --build

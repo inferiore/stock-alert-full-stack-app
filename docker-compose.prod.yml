@@ -1,16 +1,15 @@
 services:
   db:
     image: mysql:8.0
-    restart: unless-stopped
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: stockalerts
-    ports:
-      - '3306:3306'
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
     volumes:
       - db_data:/var/lib/mysql
+    mem_limit: 512m
     healthcheck:
-      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-uroot', '-proot']
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', "-u${DB_USERNAME}", "-p${DB_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -19,21 +18,20 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    restart: unless-stopped
+      target: production
+    restart: always
     ports:
       - '3000:3000'
     env_file:
       - ./backend/.env
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       DB_HOST: db
       DB_PORT: 3306
     depends_on:
       db:
         condition: service_healthy
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
+    mem_limit: 512m
 
 volumes:
   db_data:
