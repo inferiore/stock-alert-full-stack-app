@@ -29,7 +29,7 @@ import { DebugModule } from './debug/debug.module';
         password: config.get<string>('DB_PASSWORD', 'root'),
         database: config.get<string>('DB_NAME', 'stockalerts'),
         autoLoadEntities: true,
-        synchronize: config.get<string>('NODE_ENV') !== 'production',
+        synchronize: true,
       }),
     }),
     AuthModule,
