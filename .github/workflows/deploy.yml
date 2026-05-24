@@ -14,9 +14,9 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: 35.252.78.112
-          username: ederbarrios
+          username: luxuryhorizoncolombia
           key: ${{ secrets.GCP_SSH_KEY }}
           script: |
-            sudo git config --global --add safe.directory /home/ederb1_1c/stock-alerts
-            sudo GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" git -C /home/ederb1_1c/stock-alerts pull
-            cd /home/ederb1_1c/stock-alerts && sudo docker compose -f docker-compose.prod.yml up -d --build
+            sudo git config --global --add safe.directory /home/luxuryhorizoncolombia/stock-alert-full-stack-app
+            sudo GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" git -C /home/luxuryhorizoncolombia/stock-alert-full-stack-app pull
+            cd /home/luxuryhorizoncolombia/stock-alert-full-stack-app && sudo docker compose -f docker-compose.prod.yml up -d --build
