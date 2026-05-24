@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -18,14 +18,16 @@ interface Props {
 
 export default function SymbolSearchInput({ value, onSelect, testID }: Props) {
   const [query, setQuery] = useState(value);
+  const [prevValue, setPrevValue] = useState(value);
   const [results, setResults] = useState<SymbolResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
+  if (value !== prevValue) {
+    setPrevValue(value);
     setQuery(value);
-  }, [value]);
+  }
 
   const search = useCallback((text: string) => {
     setQuery(text);

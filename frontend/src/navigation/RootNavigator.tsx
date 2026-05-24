@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { useAuthStore } from '../store/authStore';
+import { usePushNotifications } from '../hooks/usePushNotifications';
 
 // Auth screens
 import LoginScreen from '../screens/auth/LoginScreen';
@@ -75,6 +76,7 @@ function AppNavigator() {
 
 export default function RootNavigator() {
   const { token, isHydrated } = useAuthStore();
+  usePushNotifications();
 
   if (!isHydrated) {
     return (

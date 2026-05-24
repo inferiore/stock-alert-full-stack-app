@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { IsIn, IsNumber, IsString, Min } from 'class-validator';
+import { IsNumber, IsString, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PRICE_UPDATE_EVENT } from '../common/events.constants';
 import type { PriceUpdatePayload } from '../common/events.constants';
