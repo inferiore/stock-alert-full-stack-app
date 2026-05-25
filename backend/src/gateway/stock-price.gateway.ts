@@ -13,27 +13,12 @@ import type { PriceUpdatePayload } from '../common/events.constants';
 import { FINNHUB_SERVICE_TOKEN } from '../finnhub/interfaces/finnhub.service.interface';
 import type { IFinnhubService } from '../finnhub/interfaces/finnhub.service.interface';
 import { WsJwtGuard } from './ws-jwt.guard';
+import { CRYPTO_PROXY, REVERSE_PROXY } from '../common/symbol-proxy';
 
 interface SocketData {
   userId: string;
   email: string;
 }
-
-// Finnhub free-tier only delivers real-time WebSocket trades for crypto.
-// Map each US stock display symbol to a Binance pair that actually streams data.
-const CRYPTO_PROXY: Record<string, string> = {
-  AAPL:  'BINANCE:BTCUSDT',
-  GOOGL: 'BINANCE:ETHUSDT',
-  TSLA:  'BINANCE:SOLUSDT',
-  MSFT:  'BINANCE:BNBUSDT',
-  AMZN:  'BINANCE:XRPUSDT',
-  NVDA:  'BINANCE:ADAUSDT',
-};
-
-// Reverse map: crypto pair → display symbol (for broadcasting back to clients)
-const REVERSE_PROXY: Record<string, string> = Object.fromEntries(
-  Object.entries(CRYPTO_PROXY).map(([stock, crypto]) => [crypto, stock]),
-);
 
 @WebSocketGateway({
   cors: { origin: '*' },

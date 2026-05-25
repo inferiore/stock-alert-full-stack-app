@@ -17,6 +17,7 @@ import { CreateAlertDto } from './dto/create-alert.dto';
 import { Alert } from './entities/alert.entity';
 import { AlertsRepository } from './repositories/alerts.repository';
 import { IAlertsService } from './interfaces/alerts.service.interface';
+import { REVERSE_PROXY } from '../common/symbol-proxy';
 
 @Injectable()
 export class AlertsService implements IAlertsService {
@@ -49,7 +50,10 @@ export class AlertsService implements IAlertsService {
 
   @OnEvent(PRICE_UPDATE_EVENT)
   async evaluatePrice(payload: PriceUpdatePayload): Promise<void> {
-    const { symbol, price } = payload;
+    const { price } = payload;
+    // The event carries the Finnhub crypto symbol (e.g. BINANCE:BTCUSDT).
+    // Reverse-map it to the display symbol (e.g. AAPL) that alerts are stored under.
+    const symbol = REVERSE_PROXY[payload.symbol] ?? payload.symbol;
     const alerts = await this.alertsRepository.findActiveBySymbol(symbol);
 
     for (const alert of alerts) {
