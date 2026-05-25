@@ -21,6 +21,11 @@ import { REVERSE_PROXY } from '../common/symbol-proxy';
 
 @Injectable()
 export class AlertsService implements IAlertsService {
+  // Guards against race condition: Finnhub sends many trades/sec so
+  // evaluatePrice can be called concurrently before the DB deactivation
+  // completes. Track in-flight alert IDs to fire each alert exactly once.
+  private readonly firingAlerts = new Set<string>();
+
   constructor(
     private readonly alertsRepository: AlertsRepository,
     private readonly eventEmitter: EventEmitter2,
@@ -61,19 +66,23 @@ export class AlertsService implements IAlertsService {
         (alert.condition === 'above' && price >= alert.targetPrice) ||
         (alert.condition === 'below' && price <= alert.targetPrice);
 
-      if (triggered) {
-        await this.alertsRepository.deactivate(alert.id);
-
-        const triggeredPayload: AlertTriggeredPayload = {
-          alertId: alert.id,
-          userId: alert.userId,
-          fcmToken: alert.user?.fcmToken ?? null,
-          symbol: alert.symbol,
-          targetPrice: Number(alert.targetPrice),
-          condition: alert.condition,
-          currentPrice: price,
-        };
-        this.eventEmitter.emit(ALERT_TRIGGERED_EVENT, triggeredPayload);
+      if (triggered && !this.firingAlerts.has(alert.id)) {
+        this.firingAlerts.add(alert.id);
+        try {
+          await this.alertsRepository.deactivate(alert.id);
+          const triggeredPayload: AlertTriggeredPayload = {
+            alertId: alert.id,
+            userId: alert.userId,
+            fcmToken: alert.user?.fcmToken ?? null,
+            symbol: alert.symbol,
+            targetPrice: Number(alert.targetPrice),
+            condition: alert.condition,
+            currentPrice: price,
+          };
+          this.eventEmitter.emit(ALERT_TRIGGERED_EVENT, triggeredPayload);
+        } finally {
+          this.firingAlerts.delete(alert.id);
+        }
       }
     }
   }
